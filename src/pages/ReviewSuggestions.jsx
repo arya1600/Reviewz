@@ -1,24 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
-import { Copy, Check, Star, Sparkles, RefreshCw, Globe } from 'lucide-react';
+import { Copy, Check, Star, Sparkles, RefreshCw } from 'lucide-react';
 import { generateReviews } from '../utils/reviewGenerator';
 import { supabase } from '../lib/supabase';
 import LoadingSpinner from '../components/LoadingSpinner';
 import InactiveReviewFlowScreen from '../components/InactiveReviewFlowScreen';
 import { checkLegacyBusinessReviewAccess } from '../utils/reviewAccess';
-
-const LANGUAGES = [
-  { code: 'English',    label: 'English',    flag: '🇬🇧' },
-  { code: 'Hindi',      label: 'हिंदी',       flag: '🇮🇳' },
-  { code: 'Marathi',    label: 'मराठी',       flag: '🇮🇳' },
-  { code: 'Gujarati',   label: 'ગુજરાતી',     flag: '🇮🇳' },
-  { code: 'Tamil',      label: 'தமிழ்',       flag: '🇮🇳' },
-  { code: 'Telugu',     label: 'తెలుగు',      flag: '🇮🇳' },
-  { code: 'Kannada',    label: 'ಕನ್ನಡ',        flag: '🇮🇳' },
-  { code: 'Bengali',    label: 'বাংলা',       flag: '🇮🇳' },
-  { code: 'Malayalam',  label: 'മലയാളം',      flag: '🇮🇳' },
-  { code: 'Punjabi',    label: 'ਪੰਜਾਬੀ',      flag: '🇮🇳' },
-];
 
 export default function ReviewSuggestions() {
   const { businessId } = useParams();
@@ -26,21 +13,18 @@ export default function ReviewSuggestions() {
   const navigate       = useNavigate();
 
   const [business, setBusiness]         = useState(state?.business ?? null);
-  // If there is no navigation state (direct URL / refresh), send back to the
-  // rating screen so the customer makes a real choice instead of defaulting to 5.
   const [rating]                        = useState(state?.rating ?? null);
   const [reviews, setReviews]           = useState([]);
   const [isAI, setIsAI]                 = useState(false);
-  const [selectedIdx, setSelectedIdx]   = useState(null); // which card is selected
-  const [language, setLanguage]         = useState('English');
+  const [selectedIdx, setSelectedIdx]   = useState(null);
   const [loading, setLoading]           = useState(true);
   const [regenerating, setRegenerating] = useState(false);
+  const [hasRegenerated, setHasRegenerated] = useState(false);
   const [saved, setSaved]               = useState(false);
-  const [showLangPicker, setShowLangPicker] = useState(false);
   const [postDone, setPostDone]         = useState(false);
-  const [accessBlocked, setAccessBlocked] = useState(null); // { reason, name } | null
+  const [accessBlocked, setAccessBlocked] = useState(null);
 
-  const buildCtx = useCallback((biz, lang) => ({
+  const buildCtx = useCallback((biz) => ({
     description:          biz.description,
     highlights:           biz.highlights,
     vibe:                 biz.vibe,
@@ -50,16 +34,13 @@ export default function ReviewSuggestions() {
     complimentedFeatures: biz.complimented_features,
     tone:                 biz.tone_preference,
     reviewLength:         biz.review_length,
-    language:             lang,
   }), []);
 
-  const generate = useCallback(async (biz, lang = 'English') => {
-    return generateReviews(biz.name, biz.category, rating, buildCtx(biz, lang));
+  const generate = useCallback(async (biz) => {
+    return generateReviews(biz.name, biz.category, rating, buildCtx(biz));
   }, [rating, buildCtx]);
 
   useEffect(() => {
-    // No rating means user landed here directly (refresh / shared URL).
-    // Redirect to the rating screen so they start the flow properly.
     if (rating === null) {
       navigate(`/review/${businessId}`, { replace: true });
       return;
@@ -84,7 +65,7 @@ export default function ReviewSuggestions() {
         if (cancelled) return;
         setBusiness(biz);
 
-        const { reviews: r, isAI: ai } = await generate(biz, 'English');
+        const { reviews: r, isAI: ai } = await generate(biz);
         if (cancelled) return;
         setReviews(r);
         setIsAI(ai);
@@ -98,25 +79,20 @@ export default function ReviewSuggestions() {
     return () => { cancelled = true; };
   }, [businessId, rating, navigate, generate]);
 
-  async function handleRegenerate(lang = language) {
+  async function handleRegenerate() {
+    if (hasRegenerated || regenerating) return;
     setRegenerating(true);
     setSelectedIdx(null);
     try {
-      const { reviews: r, isAI: ai } = await generate(business, lang);
+      const { reviews: r, isAI: ai } = await generate(business);
       setReviews(r);
       setIsAI(ai);
+      setHasRegenerated(true);
     } catch (err) {
       console.error('[ReviewSuggestions] regenerate failed:', err.message);
     } finally {
       setRegenerating(false);
     }
-  }
-
-  async function handleLanguageChange(lang) {
-    setLanguage(lang);
-    setShowLangPicker(false);
-    setSelectedIdx(null);
-    await handleRegenerate(lang);
   }
 
   async function recordReview() {
@@ -127,18 +103,13 @@ export default function ReviewSuggestions() {
     if (!error) setSaved(true);
   }
 
-  // Copy the selected review and open Google — one tap does both
   async function handleCopyAndPost() {
     if (selectedIdx === null) return;
     const text = reviews[selectedIdx];
 
-    // Attempt clipboard write; fall back gracefully when the Permissions API
-    // blocks it (e.g. some Android WebViews, cross-origin iframes).
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      // Clipboard blocked — create a temporary textarea so the browser can
-      // execute a document.execCommand copy without a permissions prompt.
       try {
         const ta = document.createElement('textarea');
         ta.value = text;
@@ -149,8 +120,6 @@ export default function ReviewSuggestions() {
         document.execCommand('copy');
         document.body.removeChild(ta);
       } catch {
-        // Both methods failed (e.g. sandboxed iframe with no user gesture).
-        // We still open Google so the customer can paste manually.
         console.warn('[ReviewSuggestions] clipboard write failed — user must paste manually');
       }
     }
@@ -159,7 +128,7 @@ export default function ReviewSuggestions() {
     setPostDone(true);
     setTimeout(() => {
       window.open(business.google_link ?? business.googleLink, '_blank');
-    }, 400); // small delay so user sees the confirmation flash
+    }, 400);
   }
 
   if (accessBlocked) {
@@ -175,13 +144,11 @@ export default function ReviewSuggestions() {
 
   const iconColor = rating >= 4 ? 'text-green-600' : rating === 3 ? 'text-yellow-600' : 'text-orange-500';
   const iconBg    = rating >= 4 ? 'bg-green-100'  : rating === 3 ? 'bg-yellow-100'  : 'bg-orange-100';
-  const currentLang = LANGUAGES.find(l => l.code === language) ?? LANGUAGES[0];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white px-4 py-10">
       <div className="max-w-lg mx-auto">
 
-        {/* Header */}
         <div className="text-center mb-6">
           <div className={`w-14 h-14 ${iconBg} rounded-2xl flex items-center justify-center mx-auto mb-3`}>
             <Sparkles className={`w-7 h-7 ${iconColor}`} />
@@ -189,7 +156,7 @@ export default function ReviewSuggestions() {
           <h1 className="text-2xl font-extrabold text-gray-900">Pick your review</h1>
           <p className="text-gray-500 mt-1 text-sm">Tap a card to select it, then post to Google in one tap.</p>
           <div className="flex justify-center gap-0.5 mt-2">
-            {[1,2,3,4,5].map(n => (
+            {[1, 2, 3, 4, 5].map(n => (
               <Star key={n} className={`w-4 h-4 ${n <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`} />
             ))}
           </div>
@@ -200,43 +167,6 @@ export default function ReviewSuggestions() {
           </span>
         </div>
 
-        {/* Language selector */}
-        <div className="flex items-center justify-end mb-4 relative">
-          <button
-            onClick={() => setShowLangPicker(v => !v)}
-            className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 border border-gray-200 rounded-xl px-3 py-1.5 bg-white hover:border-indigo-300 transition-colors"
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>{currentLang.flag} {currentLang.label}</span>
-          </button>
-
-          {showLangPicker && (
-            <div className="absolute top-10 right-0 z-20 bg-white border border-gray-200 rounded-2xl shadow-xl p-2 w-52">
-              {LANGUAGES.map(lang => (
-                <button
-                  key={lang.code}
-                  onClick={() => handleLanguageChange(lang.code)}
-                  className={`w-full text-left flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm transition-colors ${
-                    language === lang.code
-                      ? 'bg-indigo-50 text-indigo-700 font-semibold'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  <span className="text-base">{lang.flag}</span>
-                  <span>{lang.label}</span>
-                  {lang.code !== 'English' && (
-                    <span className="ml-auto text-xs text-indigo-400 font-medium">AI</span>
-                  )}
-                </button>
-              ))}
-              <p className="text-gray-400 text-xs px-3 pt-1 pb-1 border-t border-gray-100 mt-1">
-                Non-English requires OpenAI key
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Review cards — tap to select */}
         <div className={`space-y-3 mb-5 transition-opacity duration-300 ${regenerating ? 'opacity-40 pointer-events-none' : ''}`}>
           {reviews.map((review, idx) => (
             <button
@@ -250,7 +180,6 @@ export default function ReviewSuggestions() {
               }`}
             >
               <div className="flex items-start gap-3">
-                {/* Selection indicator */}
                 <div className={`flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5 flex items-center justify-center transition-colors ${
                   selectedIdx === idx ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'
                 }`}>
@@ -262,18 +191,20 @@ export default function ReviewSuggestions() {
           ))}
         </div>
 
-        {/* Regenerate */}
-        <button
-          onClick={() => handleRegenerate()}
-          disabled={regenerating}
-          className="w-full flex items-center justify-center gap-2 border border-gray-200 bg-white text-gray-600 font-semibold py-2.5 rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-colors mb-3 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-        >
-          <RefreshCw className={`w-4 h-4 ${regenerating ? 'animate-spin' : ''}`} />
-          {regenerating ? 'Generating…' : 'Get 3 new reviews'}
-        </button>
+        {!hasRegenerated && (
+          <button
+            type="button"
+            onClick={handleRegenerate}
+            disabled={regenerating}
+            className="w-full flex items-center justify-center gap-2 border border-gray-200 bg-white text-gray-600 font-semibold py-2.5 rounded-2xl hover:border-indigo-300 hover:text-indigo-600 transition-colors mb-3 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+          >
+            <RefreshCw className={`w-4 h-4 ${regenerating ? 'animate-spin' : ''}`} />
+            {regenerating ? 'Generating…' : 'Get 3 new reviews'}
+          </button>
+        )}
 
-        {/* Copy & Post on Google — single tap */}
         <button
+          type="button"
           onClick={handleCopyAndPost}
           disabled={selectedIdx === null || regenerating}
           className={`w-full flex items-center justify-center gap-2 font-bold py-4 rounded-2xl transition-all text-base shadow-lg ${
@@ -297,11 +228,6 @@ export default function ReviewSuggestions() {
           </p>
         )}
       </div>
-
-      {/* Close lang picker on outside click */}
-      {showLangPicker && (
-        <div className="fixed inset-0 z-10" onClick={() => setShowLangPicker(false)} />
-      )}
     </div>
   );
 }
