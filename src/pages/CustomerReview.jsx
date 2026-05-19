@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import LoadingSpinner from '../components/LoadingSpinner';
 import InactiveReviewFlowScreen from '../components/InactiveReviewFlowScreen';
 import { checkLegacyBusinessReviewAccess } from '../utils/reviewAccess';
+import BusinessAvatar from '../components/branding/BusinessAvatar';
 
 export default function CustomerReview() {
   const { businessId } = useParams();
@@ -80,9 +81,12 @@ export default function CustomerReview() {
     <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-white flex flex-col items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm text-center">
         <div className="mb-10">
-          <div className="w-20 h-20 rounded-2xl bg-indigo-600 text-white text-3xl font-extrabold flex items-center justify-center mx-auto mb-4 shadow-lg">
-            {business.name.charAt(0).toUpperCase()}
-          </div>
+          <BusinessAvatar
+            name={business.name}
+            logoUrl={business.business_logo_url}
+            size={80}
+            className="mx-auto mb-4 shadow-lg"
+          />
           <h1 className="text-2xl font-extrabold text-gray-900">{business.name}</h1>
           <p className="text-gray-500 flex items-center justify-center gap-1 mt-1 text-sm">
             <MapPin className="w-4 h-4" /> {business.location}
@@ -118,7 +122,7 @@ export default function CustomerReview() {
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 mt-6">Powered by ReviewBoost AI</p>
+        <p className="text-xs text-gray-400 mt-6">Powered by Reviewz</p>
       </div>
     </div>
   );

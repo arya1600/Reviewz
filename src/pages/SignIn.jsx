@@ -220,7 +220,7 @@ export default function SignIn() {
         <div className="text-center mb-6">
           <Link to="/" className="inline-flex items-center gap-2 font-bold text-xl text-indigo-600">
             <Star className="w-6 h-6 fill-indigo-600" />
-            ReviewBoost AI
+            Reviewz
           </Link>
         </div>
 

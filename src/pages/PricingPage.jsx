@@ -44,7 +44,7 @@ const FEATURES = [
   { icon: Store,        text: 'Multi-store management' },
   { icon: Smartphone,   text: 'Mobile-friendly QR landing page' },
   { icon: Shield,       text: 'QR auto-activation on renewal' },
-  { icon: Check,        text: 'Free trial — no credit card needed' },
+  { icon: Check,        text: 'Flexible monthly & annual plans' },
 ];
 
 /* ── FAQ ─────────────────────────────────────────────────────── */
@@ -58,8 +58,8 @@ const FAQS = [
     a: 'Yes. You can add stores to your account at any time. Each store gets its own unique QR code and analytics.',
   },
   {
-    q: 'What happens when my trial ends?',
-    a: 'After your 14-day trial ends, your QR code will pause until you activate a paid plan. Contact us or upgrade from your dashboard to continue.',
+    q: 'How do I activate my subscription?',
+    a: 'After you sign up, contact our team or your administrator to activate your plan. Your QR codes go live as soon as the subscription is active.',
   },
   {
     q: 'Can one account manage multiple businesses?',
@@ -113,7 +113,7 @@ export default function PricingPage() {
       <section className="pt-16 pb-8 px-4 text-center">
         <div className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4 border border-indigo-100">
           <Star className="w-3.5 h-3.5 fill-indigo-600 text-indigo-600" />
-          14-day free trial · No credit card required
+          Plans from ₹99/store/month
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-3">
           Simple pricing for<br className="hidden sm:block" /> every business
@@ -215,7 +215,7 @@ export default function PricingPage() {
               <p className="text-slate-500 text-sm mb-6">
                 For 25+ store locations, we offer custom pricing, dedicated support, and white-label options.
               </p>
-              <a href="mailto:hello@reviewboost.ai"
+              <a href="mailto:hello@reviewz.ai"
                 className="inline-flex items-center gap-2 bg-indigo-600 text-white font-bold px-6 py-3.5 rounded-xl hover:bg-indigo-700 transition-colors">
                 Contact Sales <ArrowRight className="w-4 h-4" />
               </a>
@@ -294,7 +294,7 @@ export default function PricingPage() {
                 <ArrowRight className="w-5 h-5" />
               </button>
               <p className="text-center text-indigo-300 text-xs mt-2.5">
-                14-day free trial · No credit card required
+                Plans from ₹99/store/month
               </p>
             </>
           )}
@@ -335,7 +335,7 @@ export default function PricingPage() {
           {[
             { stat: '10x',    label: 'More reviews vs manual ask' },
             { stat: '< 30s',  label: 'Setup time per store' },
-            { stat: '₹0',     label: 'To start your trial' },
+            { stat: '₹99',    label: 'Per store per month' },
           ].map(({ stat, label }) => (
             <div key={stat}>
               <p className="text-3xl font-extrabold text-indigo-600">{stat}</p>
@@ -360,10 +360,10 @@ export default function PricingPage() {
         <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">
           Ready to grow your reviews?
         </h2>
-        <p className="text-slate-500 mb-6">Start your free 14-day trial. No credit card needed.</p>
+        <p className="text-slate-500 mb-6">Sign up and contact us to activate your plan.</p>
         <button onClick={handleCTA}
           className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-8 py-4 rounded-2xl transition-colors shadow-md shadow-indigo-200 text-base">
-          Start Free Trial <ArrowRight className="w-5 h-5" />
+          Get started <ArrowRight className="w-5 h-5" />
         </button>
       </section>
 
@@ -377,7 +377,7 @@ export default function PricingPage() {
               <p className="text-indigo-300 text-xs">{stores} store{stores > 1 ? 's' : ''} · {dur.label}</p>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className="text-sm font-semibold">Start Free Trial</span>
+              <span className="text-sm font-semibold">Get started</span>
               <ArrowRight className="w-4 h-4" />
             </div>
           </button>

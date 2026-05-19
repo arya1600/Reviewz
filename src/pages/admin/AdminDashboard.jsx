@@ -211,7 +211,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
-            <p className="text-slate-500 text-sm mt-0.5">ReviewBoost AI platform overview</p>
+            <p className="text-slate-500 text-sm mt-0.5">Reviewz platform overview</p>
           </div>
           <button
             onClick={loadData}

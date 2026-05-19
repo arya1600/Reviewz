@@ -20,7 +20,7 @@ export default function LandingNav({ showAnchors = false }) {
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
             <Star className="w-4 h-4 text-white fill-white" />
           </div>
-          ReviewBoost AI
+          Reviewz
         </Link>
 
         <div className="hidden sm:flex items-center gap-6 text-sm font-medium text-slate-500">

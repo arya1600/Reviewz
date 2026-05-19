@@ -5,7 +5,7 @@ const supabaseAnon = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnon) {
   throw new Error(
-    '[ReviewBoost] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are not set.\n' +
+    '[Reviewz] VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are not set.\n' +
     'Copy .env.example to .env and add your Supabase project credentials.\n' +
     'The app cannot start without them.'
   );

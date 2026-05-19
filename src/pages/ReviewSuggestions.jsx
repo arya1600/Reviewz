@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { Copy, Check, Star, Sparkles, RefreshCw, Globe } from 'lucide-react';
 import { generateReviews } from '../utils/reviewGenerator';
@@ -57,8 +57,6 @@ export default function ReviewSuggestions() {
     return generateReviews(biz.name, biz.category, rating, buildCtx(biz, lang));
   }, [rating, buildCtx]);
 
-  const bootstrapped = useRef(false);
-
   useEffect(() => {
     // No rating means user landed here directly (refresh / shared URL).
     // Redirect to the rating screen so they start the flow properly.
@@ -67,45 +65,38 @@ export default function ReviewSuggestions() {
       return;
     }
 
-    // Guard against StrictMode double-invoke and remount without route change.
-    if (bootstrapped.current) return;
-    bootstrapped.current = true;
-
     let cancelled = false;
 
     async function bootstrap() {
-      const access = await checkLegacyBusinessReviewAccess(businessId);
-      if (cancelled) return;
-      if (!access.ok) {
-        if (access.reason === 'not_found') {
-          navigate('/', { replace: true });
+      try {
+        const access = await checkLegacyBusinessReviewAccess(businessId);
+        if (cancelled) return;
+        if (!access.ok) {
+          if (access.reason === 'not_found') {
+            navigate('/', { replace: true });
+            return;
+          }
+          setAccessBlocked({ reason: access.reason, name: access.business?.name });
           return;
         }
-        setAccessBlocked({ reason: access.reason, name: access.business?.name });
-        setLoading(false);
-        return;
-      }
 
-      const biz = access.business;
-      setBusiness(biz);
-      try {
+        const biz = access.business;
+        if (cancelled) return;
+        setBusiness(biz);
+
         const { reviews: r, isAI: ai } = await generate(biz, 'English');
         if (cancelled) return;
         setReviews(r);
         setIsAI(ai);
       } catch (err) {
-        if (cancelled) return;
-        console.error('[ReviewSuggestions] generate failed:', err.message);
+        if (!cancelled) console.error('[ReviewSuggestions] generate failed:', err.message);
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
     bootstrap();
     return () => { cancelled = true; };
-  // businessId and rating are route-derived and stable for this mount;
-  // navigate and generate are stable references — safe to omit from deps.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [businessId, rating, navigate, generate]);
 
   async function handleRegenerate(lang = language) {
     setRegenerating(true);

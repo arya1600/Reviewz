@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS businesses (
   status                TEXT DEFAULT 'active'
     CHECK (status IN ('active', 'suspended', 'inactive')),
   onboarding_complete   BOOLEAN DEFAULT false,
+  business_logo_url     TEXT,
   created_at            TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -242,7 +243,7 @@ AS
 SELECT id, name, category, location, google_link,
        description, highlights, vibe, products, staff_names,
        customer_types, complimented_features, tone_preference,
-       review_length, status
+       review_length, status, business_logo_url
 FROM businesses;
 
 GRANT SELECT ON businesses_public TO anon, authenticated;

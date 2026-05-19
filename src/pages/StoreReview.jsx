@@ -18,6 +18,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Star, AlertTriangle, ThumbsUp, MessageSquare, ExternalLink, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { generateReviews } from '../utils/reviewGenerator';
+import BusinessAvatar from '../components/branding/BusinessAvatar';
 
 /* ── Expired / Suspended screen ──────────────────────────────── */
 function ExpiredScreen({ storeName, businessName, reason }) {
@@ -41,7 +42,7 @@ function ExpiredScreen({ storeName, businessName, reason }) {
           Please contact the business owner to renew.
         </p>
         <div className="mt-6 pt-5 border-t border-slate-100">
-          <p className="text-xs text-slate-300">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300">Powered by Reviewz</p>
         </div>
       </div>
     </div>
@@ -124,7 +125,7 @@ function SuggestionsScreen({ rating, store, business, onBack }) {
           <h2 className="text-xl font-bold text-slate-800 mb-2">Thank You! 🎉</h2>
           <p className="text-slate-500 text-sm">Your review has been copied. Please paste it on Google to help {business.name}.</p>
           <div className="mt-6 pt-5 border-t border-slate-100">
-            <p className="text-xs text-slate-300">Powered by ReviewBoost AI</p>
+            <p className="text-xs text-slate-300">Powered by Reviewz</p>
           </div>
         </div>
       </div>
@@ -176,7 +177,7 @@ function SuggestionsScreen({ rating, store, business, onBack }) {
         )}
 
         <p className="text-center text-xs text-slate-400 mt-8">
-          Powered by <span className="font-medium">ReviewBoost AI</span>
+          Powered by <span className="font-medium">Reviewz</span>
         </p>
       </div>
     </div>
@@ -217,7 +218,7 @@ function FeedbackScreen({ rating, store, business, onDone }) {
           </div>
           <h2 className="text-xl font-bold text-slate-800 mb-2">Feedback Received</h2>
           <p className="text-slate-500 text-sm">Thank you for sharing your experience. We'll make it better.</p>
-          <p className="text-xs text-slate-300 mt-6">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300 mt-6">Powered by Reviewz</p>
         </div>
       </div>
     );
@@ -247,7 +248,7 @@ function FeedbackScreen({ rating, store, business, onDone }) {
             {submitting ? 'Sending…' : 'Send Feedback'}
           </button>
         </form>
-        <p className="text-center text-xs text-slate-300 mt-4">Powered by ReviewBoost AI</p>
+        <p className="text-center text-xs text-slate-300 mt-4">Powered by Reviewz</p>
       </div>
     </div>
   );
@@ -269,10 +270,12 @@ function RatingScreen({ store, business }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl shadow-xl p-8 max-w-sm w-full text-center">
-        {/* Business avatar */}
-        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
-          <span className="text-2xl font-bold text-white">{business.name?.[0]?.toUpperCase()}</span>
-        </div>
+        <BusinessAvatar
+          name={business.name}
+          logoUrl={business.business_logo_url}
+          size={64}
+          className="mx-auto mb-4 shadow-lg shadow-indigo-200"
+        />
         <h2 className="text-xl font-bold text-slate-800">{business.name}</h2>
         <p className="text-slate-400 text-sm mt-0.5 mb-6">{store.store_name} · {store.city}</p>
 
@@ -281,7 +284,7 @@ function RatingScreen({ store, business }) {
 
         <p className="text-xs text-slate-400 mt-6">Tap a star to rate your visit</p>
         <div className="mt-6 pt-5 border-t border-slate-100">
-          <p className="text-xs text-slate-300">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300">Powered by Reviewz</p>
         </div>
       </div>
     </div>
@@ -301,7 +304,7 @@ export default function StoreReview() {
         // 1. Load store by slug
         const { data: storeData, error: storeErr } = await supabase
           .from('stores')
-          .select('*, businesses(id, name, category, location, google_link, description, highlights, vibe, products, staff_names, customer_types, complimented_features, tone_preference, review_length, status)')
+          .select('*, businesses(id, name, category, location, google_link, business_logo_url, description, highlights, vibe, products, staff_names, customer_types, complimented_features, tone_preference, review_length, status)')
           .eq('slug', storeSlug)
           .maybeSingle();
 
@@ -351,7 +354,7 @@ export default function StoreReview() {
           <button onClick={() => window.location.reload()} className="mt-4 px-5 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700">
             Retry
           </button>
-          <p className="text-xs text-slate-300 mt-6">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300 mt-6">Powered by Reviewz</p>
         </div>
       </div>
     );
@@ -363,7 +366,7 @@ export default function StoreReview() {
         <div className="bg-white rounded-3xl shadow-xl p-8 max-w-sm w-full text-center">
           <h2 className="text-xl font-bold text-slate-800 mb-2">QR Code Not Found</h2>
           <p className="text-slate-500 text-sm">This QR code is not valid or has been removed.</p>
-          <p className="text-xs text-slate-300 mt-6">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300 mt-6">Powered by Reviewz</p>
         </div>
       </div>
     );

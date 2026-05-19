@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase';
 
 /** Columns needed for customer review flows after access is granted. */
 const BUSINESS_SELECT = `
-  id, name, category, location, google_link, status,
+  id, name, category, location, google_link, status, business_logo_url,
   description, highlights, vibe, products, staff_names, customer_types,
   complimented_features, tone_preference, review_length
 `.replace(/\s+/g, ' ').trim();

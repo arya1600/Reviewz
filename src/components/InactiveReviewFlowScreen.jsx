@@ -32,7 +32,7 @@ export default function InactiveReviewFlowScreen({
         </p>
         <p className="text-slate-500 text-sm mt-3 font-medium">Please contact the business if you need help.</p>
         <div className="mt-6 pt-5 border-t border-slate-100">
-          <p className="text-xs text-slate-300">Powered by ReviewBoost AI</p>
+          <p className="text-xs text-slate-300">Powered by Reviewz</p>
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import AppFooter from '../components/AppFooter';
+import LogoUpload from '../components/branding/LogoUpload';
+import { uploadBusinessLogo } from '../lib/logoStorage';
 
 const categories = [
   'Restaurant', 'Cafe', 'Bakery', 'Bar', 'Retail Store', 'Boutique',
@@ -54,6 +56,17 @@ export default function BusinessSetup() {
   const [loading, setLoading]          = useState(!!editId); // only load if editing
   const [saving, setSaving]            = useState(false);
   const [existingId, setExistingId]    = useState(editId || null);
+  const [logoUrl, setLogoUrl]          = useState(null);
+  const [pendingLogoBlob, setPendingLogoBlob] = useState(null);
+
+  function handleLogoChange(url) {
+    if (logoUrl?.startsWith('blob:') && url !== logoUrl) URL.revokeObjectURL(logoUrl);
+    setLogoUrl(url);
+  }
+
+  function handlePendingLogo(blob) {
+    setPendingLogoBlob(blob);
+  }
 
   useEffect(() => {
     // If no editId, this is a fresh "Add Business" — skip loading
@@ -84,6 +97,7 @@ export default function BusinessSetup() {
           tone:               data.tone_preference       ?? 'casual',
           reviewLength:       data.review_length         ?? 'medium',
         });
+        setLogoUrl(data.business_logo_url ?? null);
       }
       setLoading(false);
     }
@@ -136,14 +150,43 @@ export default function BusinessSetup() {
     };
 
     let dbError;
+    let savedId = existingId;
     if (existingId) {
       ({ error: dbError } = await supabase.from('businesses').update(payload).eq('id', existingId));
     } else {
-      ({ error: dbError } = await supabase.from('businesses').insert(payload));
+      const { data: created, error } = await supabase.from('businesses').insert(payload).select('id').single();
+      dbError = error;
+      savedId = created?.id ?? null;
+    }
+
+    if (dbError) {
+      setSaving(false);
+      setErrors({ submit: dbError.message });
+      return;
+    }
+
+    if (pendingLogoBlob && savedId) {
+      try {
+        const url = await uploadBusinessLogo(savedId, pendingLogoBlob);
+        if (logoUrl?.startsWith('blob:')) URL.revokeObjectURL(logoUrl);
+        setLogoUrl(url);
+        setPendingLogoBlob(null);
+      } catch (err) {
+        setSaving(false);
+        setErrors({ submit: `Business saved, but logo upload failed: ${err.message}` });
+        setExistingId(savedId);
+        navigate(`/setup?edit=${savedId}`, { replace: true });
+        return;
+      }
     }
 
     setSaving(false);
-    if (dbError) { setErrors({ submit: dbError.message }); return; }
+
+    if (!existingId && savedId) {
+      setExistingId(savedId);
+      navigate(`/setup?edit=${savedId}`, { replace: true });
+      return;
+    }
     navigate('/dashboard');
   }
 
@@ -198,6 +241,22 @@ export default function BusinessSetup() {
                 <input name="googleLink" value={form.googleLink} onChange={handleChange}
                   placeholder="https://g.page/r/…" className={inputClass('googleLink')} />
               </Field>
+            </Section>
+
+            {/* ── Business branding ─────────────────────────────────── */}
+            <Section title="Business branding" badge="QR & review pages">
+              <LogoUpload
+                businessId={existingId}
+                businessName={form.name}
+                logoUrl={logoUrl}
+                onLogoChange={handleLogoChange}
+                onPendingLogoChange={handlePendingLogo}
+                previewQrValue={
+                  existingId
+                    ? `${window.location.origin}/review/${existingId}`
+                    : null
+                }
+              />
             </Section>
 
             {/* ── 2. What you sell ───────────────────────────────────── */}

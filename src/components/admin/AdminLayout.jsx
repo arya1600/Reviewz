@@ -54,7 +54,7 @@ export default function AdminLayout({ children }) {
           <Star className="w-4 h-4 text-white fill-white" />
         </div>
         <div>
-          <p className="text-white font-bold text-sm leading-tight">ReviewBoost AI</p>
+          <p className="text-white font-bold text-sm leading-tight">Reviewz</p>
           <p className="text-slate-400 text-xs flex items-center gap-1">
             <Shield className="w-3 h-3" /> Super Admin
           </p>

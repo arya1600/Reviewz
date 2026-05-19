@@ -49,7 +49,7 @@ export default function AdminLogin() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-600 rounded-2xl mb-4 shadow-lg shadow-indigo-900/50">
             <Star className="w-8 h-8 text-white fill-white" />
           </div>
-          <h1 className="text-2xl font-bold text-white">ReviewBoost AI</h1>
+          <h1 className="text-2xl font-bold text-white">Reviewz</h1>
           <div className="flex items-center justify-center gap-1.5 mt-1">
             <Shield className="w-4 h-4 text-indigo-400" />
             <p className="text-indigo-400 text-sm font-medium">Super Admin Portal</p>
@@ -76,7 +76,7 @@ export default function AdminLogin() {
                 required
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                placeholder="admin@reviewboost.ai"
+                placeholder="admin@reviewz.ai"
                 className="w-full px-4 py-3 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
               />
             </div>
@@ -118,7 +118,7 @@ export default function AdminLogin() {
         </div>
 
         <p className="text-center text-slate-500 text-xs mt-6">
-          © 2026 ReviewBoost AI · Admin Portal
+          © 2026 Reviewz · Admin Portal
         </p>
       </div>
     </div>

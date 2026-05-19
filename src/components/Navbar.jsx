@@ -55,7 +55,7 @@ export default function Navbar() {
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
             <Star className="w-4 h-4 text-white fill-white" />
           </div>
-          <span className="hidden sm:block">ReviewBoost AI</span>
+          <span className="hidden sm:block">Reviewz</span>
         </Link>
 
         {/* ── Desktop nav links ─────────────────────────── */}

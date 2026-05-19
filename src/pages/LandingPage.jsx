@@ -69,7 +69,7 @@ function PhoneMockup() {
               <div className="text-center">
                 <div className="inline-flex items-center gap-1 text-[10px] text-slate-300">
                   <Star className="w-3 h-3 fill-slate-300 text-slate-300" />
-                  Powered by ReviewBoost AI
+                  Powered by Reviewz
                 </div>
               </div>
             </div>
@@ -99,7 +99,7 @@ function PhoneMockup() {
               <div className="text-center">
                 <div className="inline-flex items-center gap-1 text-[10px] text-slate-300">
                   <Star className="w-3 h-3 fill-slate-300 text-slate-300" />
-                  Powered by ReviewBoost AI
+                  Powered by Reviewz
                 </div>
               </div>
             </div>
@@ -132,7 +132,7 @@ function PhoneMockup() {
               <div className="text-center mt-2">
                 <div className="inline-flex items-center gap-1 text-[10px] text-slate-300">
                   <Star className="w-3 h-3 fill-slate-300 text-slate-300" />
-                  Powered by ReviewBoost AI
+                  Powered by Reviewz
                 </div>
               </div>
             </div>
@@ -175,8 +175,8 @@ const FAQS = [
     a: 'Under 2 minutes. Enter your business name, location, Google review link, and add one store — your QR code is ready to download and print.',
   },
   {
-    q: 'What happens after my 14-day trial?',
-    a: 'After the trial, your QR codes pause until you activate a paid plan starting at ₹99/store/month. We\'ll remind you before it ends.',
+    q: 'How do I get started?',
+    a: 'Choose a plan, complete signup, and contact us to activate your subscription. Once active, your QR codes work immediately — plans start at ₹99/store/month.',
   },
 ];
 
@@ -227,13 +227,13 @@ export default function LandingPage() {
 
           <p className="text-lg sm:text-xl text-slate-500 max-w-2xl mx-auto mb-8 leading-relaxed">
             Customers scan → rate → our AI writes a real Google review for them.
-            Businesses using ReviewBoost AI collect reviews 10x faster than asking manually.
+            Businesses using Reviewz collect reviews 10x faster than asking manually.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
             <Link to="/signin"
               className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-8 py-4 rounded-2xl text-base transition-all shadow-lg shadow-indigo-200 hover:shadow-xl hover:shadow-indigo-200 hover:-translate-y-0.5">
-              Start free — 14 days on us
+              Get started
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/pricing"
@@ -243,7 +243,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-5 text-sm text-slate-500">
-            {['No credit card required', '14-day free trial', 'Setup in under 2 minutes', 'QR code never changes'].map(t => (
+            {['Plans from ₹99/store/month', 'Setup in under 2 minutes', 'QR code never changes', 'Subscription activation by admin'].map(t => (
               <span key={t} className="flex items-center gap-1.5">
                 <CheckCircle className="w-4 h-4 text-green-500" /> {t}
               </span>
@@ -426,7 +426,7 @@ export default function LandingPage() {
               See all plans & discounts <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <p className="text-slate-400 text-sm">14-day free trial · No credit card required · Cancel anytime</p>
+          <p className="text-slate-400 text-sm">Plans from ₹99/store/month · Setup in 2 minutes</p>
         </div>
       </section>
 
@@ -455,14 +455,14 @@ export default function LandingPage() {
             are waiting
           </h2>
           <p className="text-slate-500 text-lg mb-8">
-            Start your free trial today. No credit card, no contracts — just more reviews.
+            Choose a plan, activate your subscription, and start collecting more Google reviews.
           </p>
           <Link to="/signin"
             className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold px-10 py-5 rounded-2xl text-lg transition-all shadow-xl shadow-indigo-200 hover:shadow-2xl hover:shadow-indigo-200 hover:-translate-y-0.5">
-            Start growing reviews free
+            Get started
             <ArrowRight className="w-5 h-5" />
           </Link>
-          <p className="text-slate-400 text-sm mt-4">14-day free trial · Setup in 2 minutes · Cancel anytime</p>
+          <p className="text-slate-400 text-sm mt-4">Plans from ₹99/store/month · Setup in 2 minutes</p>
         </div>
       </section>
 
@@ -473,7 +473,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
               <Star className="w-4 h-4 text-white fill-white" />
             </div>
-            <span className="font-bold text-white">ReviewBoost AI</span>
+            <span className="font-bold text-white">Reviewz</span>
           </div>
           <div className="flex gap-6 text-sm">
             <Link to="/pricing" className="hover:text-white transition-colors">Pricing</Link>
@@ -481,7 +481,7 @@ export default function LandingPage() {
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <Link to="/signin" className="hover:text-white transition-colors">Sign in</Link>
           </div>
-          <p className="text-xs text-slate-500">© {new Date().getFullYear()} ReviewBoost AI</p>
+          <p className="text-xs text-slate-500">© {new Date().getFullYear()} Reviewz</p>
         </div>
       </footer>
     </div>

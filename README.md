@@ -1,4 +1,4 @@
-# ReviewBoost AI
+# Reviewz
 
 An AI-powered Google review funnel for local businesses. Merchants generate a QR code → customers scan it → happy customers get AI-written review suggestions to post on Google → unhappy customers submit private feedback directly to the merchant's dashboard.
 

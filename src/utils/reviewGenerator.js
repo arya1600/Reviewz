@@ -288,9 +288,13 @@ async function generateWithAI(businessName, category, rating, ctx = {}) {
 
   const prompt = buildPrompt(businessName, category, rating, ctx);
 
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), 45_000);
+
   try {
     const res = await fetch(`${supabaseUrl}/functions/v1/generate-reviews`, {
-      method: 'POST',
+      method:  'POST',
+      signal:  controller.signal,
       headers: {
         'Content-Type': 'application/json',
         apikey:         import.meta.env.VITE_SUPABASE_ANON_KEY ?? '',
@@ -313,8 +317,11 @@ async function generateWithAI(businessName, category, rating, ctx = {}) {
 
     return json.reviews ?? null;
   } catch (err) {
-    console.warn('[ReviewGen] fetch failed:', err, '— using templates');
+    const reason = err?.name === 'AbortError' ? 'timeout' : 'network';
+    console.warn(`[ReviewGen] fetch failed (${reason}):`, err, '— using templates');
     return null;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 

@@ -113,7 +113,7 @@ export default function ResetMpin() {
         {/* Logo */}
         <Link to="/" className="inline-flex items-center gap-2 font-bold text-xl text-indigo-600 mb-8">
           <Star className="w-6 h-6 fill-indigo-600" />
-          ReviewBoost AI
+          Reviewz
         </Link>
 
         {/* Waiting for Supabase event */}

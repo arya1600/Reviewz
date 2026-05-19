@@ -15,7 +15,7 @@ export default function AppFooter() {
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-2 text-indigo-600 font-bold text-sm hover:opacity-80 transition-opacity">
           <Star className="w-4 h-4 fill-indigo-600" />
-          ReviewBoost AI
+          Reviewz
         </Link>
 
         <div className="flex flex-wrap justify-center gap-5 text-sm text-gray-400">
@@ -29,7 +29,7 @@ export default function AppFooter() {
           <Link to="/"        className="hover:text-indigo-600 transition-colors">Home</Link>
         </div>
 
-        <p className="text-xs text-gray-300">© {new Date().getFullYear()} ReviewBoost AI</p>
+        <p className="text-xs text-gray-300">© {new Date().getFullYear()} Reviewz</p>
       </div>
     </footer>
   );

@@ -6,7 +6,7 @@
  * Step 3: QR code ready → download & go to dashboard
  *
  * Resumable: if user refreshes mid-flow, we detect where they left off.
- * No free trial — admin manually activates subscriptions.
+ * Subscriptions are activated by admin after payment.
  */
 
 import { useState, useEffect } from 'react';
@@ -612,7 +612,7 @@ export default function Onboarding() {
         <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center shadow-sm shadow-indigo-200">
           <Star className="w-5 h-5 text-white fill-white" />
         </div>
-        <span className="font-bold text-xl text-slate-800">ReviewBoost AI</span>
+        <span className="font-bold text-xl text-slate-800">Reviewz</span>
       </div>
 
       {/* Card */}
