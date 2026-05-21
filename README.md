@@ -100,22 +100,18 @@ Row Level Security ensures:
 - Customers can insert scans and reviews without an account
 - Business info is publicly readable (required for QR page)
 
-## Deployment (Railway)
+## Deployment (Vercel)
 
-Production build and SPA serving are configured in `package.json` (`build` + `start`) and `railway.toml`.
+Vite is auto-detected by Vercel. `vercel.json` rewrites all routes to `index.html` for React Router.
 
-### 1. Push to GitHub
+### 1. Import the repo
 
-Commit your changes and push the repo Railway will connect to.
+1. [vercel.com](https://vercel.com) → **Add New** → **Project** → import your GitHub repo.
+2. Framework preset: **Vite** (defaults: build `npm run build`, output `dist`).
 
-### 2. Create the Railway service
+### 2. Environment variables
 
-1. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo** → select this repo.
-2. Railway runs `npm install`, `npm run build`, then `npm start` (serves `dist/` with client-side routing).
-
-### 3. Environment variables
-
-In the Railway service → **Variables**, add (same as `.env.example`):
+In the Vercel project → **Settings → Environment Variables**, add:
 
 | Variable | Description |
 |----------|-------------|
@@ -124,22 +120,18 @@ In the Railway service → **Variables**, add (same as `.env.example`):
 
 Redeploy after adding or changing variables (Vite embeds them at build time).
 
-### 4. Public URL
+### 3. Custom domain
 
-**Settings → Networking → Generate Domain** for a `*.up.railway.app` URL.
+**Project → Settings → Domains** → add your domain → follow Vercel’s DNS instructions at your registrar.
 
-### 5. Custom domain
+### 4. Supabase Auth URLs
 
-**Networking → Custom Domain** → enter your domain → add the CNAME/TXT records Railway shows at your DNS provider → wait for SSL.
+Under **Authentication → URL Configuration**, set **Site URL** and **Redirect URLs** to your Vercel and custom domains, for example:
 
-### 6. Supabase Auth URLs
-
-Under **Authentication → URL Configuration**, set **Site URL** and **Redirect URLs** to your Railway and custom domains, for example:
-
-- `https://your-app.up.railway.app`
-- `https://your-app.up.railway.app/**`
+- `https://your-project.vercel.app`
+- `https://your-project.vercel.app/**`
 - `https://yourdomain.com`
 - `https://yourdomain.com/**`
 - `https://yourdomain.com/reset-mpin`
 
-> OpenAI stays in Supabase Edge Function secrets (`supabase secrets set OPENAI_API_KEY=...`), not in Railway.
+> OpenAI stays in Supabase Edge Function secrets (`supabase secrets set OPENAI_API_KEY=...`), not in Vercel.
