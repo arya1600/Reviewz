@@ -100,16 +100,46 @@ Row Level Security ensures:
 - Customers can insert scans and reviews without an account
 - Business info is publicly readable (required for QR page)
 
-## Deployment
+## Deployment (Railway)
 
-Build for production:
+Production build and SPA serving are configured in `package.json` (`build` + `start`) and `railway.toml`.
 
-```bash
-npm run build
-```
+### 1. Push to GitHub
 
-Deploy the `dist/` folder to any static host (Vercel, Netlify, Cloudflare Pages, etc.).
+Commit your changes and push the repo Railway will connect to.
 
-Set the same environment variables in your hosting platform's dashboard.
+### 2. Create the Railway service
 
-> **Note:** Make sure your Supabase project's **Site URL** and **Redirect URLs** include your production domain under **Authentication → URL Configuration**.
+1. [railway.app](https://railway.app) → **New Project** → **Deploy from GitHub repo** → select this repo.
+2. Railway runs `npm install`, `npm run build`, then `npm start` (serves `dist/` with client-side routing).
+
+### 3. Environment variables
+
+In the Railway service → **Variables**, add (same as `.env.example`):
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_SUPABASE_URL` | Supabase project URL |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anon key |
+
+Redeploy after adding or changing variables (Vite embeds them at build time).
+
+### 4. Public URL
+
+**Settings → Networking → Generate Domain** for a `*.up.railway.app` URL.
+
+### 5. Custom domain
+
+**Networking → Custom Domain** → enter your domain → add the CNAME/TXT records Railway shows at your DNS provider → wait for SSL.
+
+### 6. Supabase Auth URLs
+
+Under **Authentication → URL Configuration**, set **Site URL** and **Redirect URLs** to your Railway and custom domains, for example:
+
+- `https://your-app.up.railway.app`
+- `https://your-app.up.railway.app/**`
+- `https://yourdomain.com`
+- `https://yourdomain.com/**`
+- `https://yourdomain.com/reset-mpin`
+
+> OpenAI stays in Supabase Edge Function secrets (`supabase secrets set OPENAI_API_KEY=...`), not in Railway.
